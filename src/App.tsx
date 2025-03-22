@@ -1,6 +1,6 @@
 import { Amplify } from "aws-amplify";
 import { getCurrentUser, fetchUserAttributes, signOut } from "aws-amplify/auth";
-import { SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import ProductForm from './components/ProductForm';
@@ -10,7 +10,7 @@ import SignUp from "./components/auth/SignUp";
 import './App.css';
 
 import { uploadData } from 'aws-amplify/storage';
-import { FileUploader } from '@aws-amplify/ui-react-storage';
+// import { FileUploader } from '@aws-amplify/ui-react-storage';
 import '@aws-amplify/ui-react/styles.css';
 
 import outputs from '../amplify_outputs.json';
