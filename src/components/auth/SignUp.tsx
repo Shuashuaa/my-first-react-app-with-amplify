@@ -5,14 +5,18 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-Amplify.configure({
-  Auth: {
-    Cognito: {
-        userPoolClientId: "647p68o88lfdi0plo0thqngola",
-        userPoolId: "ap-southeast-1_HOQQzITYh"
-    },
-  },
-});
+import outputs from '../../../amplify_outputs.json';
+
+Amplify.configure(outputs
+//     {
+//   Auth: {
+//     Cognito: {
+//         userPoolClientId: "647p68o88lfdi0plo0thqngola",
+//         userPoolId: "ap-southeast-1_HOQQzITYh"
+//     },
+//   },
+// }
+);
 
 function SignUp({ setIsRegistering }: { setIsRegistering: Function }
 ) {
