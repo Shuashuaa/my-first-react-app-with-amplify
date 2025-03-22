@@ -20,7 +20,7 @@ Amplify.configure({
       userPoolClientId: "647p68o88lfdi0plo0thqngola",
       userPoolId: "ap-southeast-1_HOQQzITYh"
     },
-  },
+  }
 });
 
 function App() {
