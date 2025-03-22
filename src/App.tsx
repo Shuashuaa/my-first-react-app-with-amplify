@@ -1,7 +1,6 @@
 import { Amplify } from "aws-amplify";
-import { uploadData } from 'aws-amplify/storage';
 import { getCurrentUser, fetchUserAttributes,signOut } from "aws-amplify/auth";
-import { SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import ProductForm from './components/ProductForm';

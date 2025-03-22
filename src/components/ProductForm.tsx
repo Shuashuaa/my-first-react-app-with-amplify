@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { uploadData } from 'aws-amplify/storage';
-import { FileUploader } from '@aws-amplify/ui-react-storage';
+// import { FileUploader } from '@aws-amplify/ui-react-storage';
 import '@aws-amplify/ui-react/styles.css';
 import { ChangeEvent, useState } from "react";
 
