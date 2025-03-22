@@ -1,0 +1,6 @@
+userPoolClientId: "647p68o88lfdi0plo0thqngola", //import.meta.env.VITE_API_KEY;
+VITE_API_KEY=thisisasamplesecretkey27!
+VITE_CLIENT_ID=647p68o88lfdi0plo0thqngola
+VITE_POOL_ID=ap-southeast-1_HOQQzITYh
+userPoolId: "ap-southeast-1_HOQQzITYh", //import.meta.env.VITE_API_KEY;
+//import.meta.env.VITE_API_KEY; thisisasampleapikey2--
