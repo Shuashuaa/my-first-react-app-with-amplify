@@ -1,6 +1,6 @@
 import { Amplify } from "aws-amplify";
-import { getCurrentUser, fetchUserAttributes,signOut } from "aws-amplify/auth";
-import { useEffect, useState } from 'react';
+import { getCurrentUser, fetchUserAttributes, signOut } from "aws-amplify/auth";
+import { SetStateAction, useEffect, useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import ProductForm from './components/ProductForm';
@@ -9,19 +9,26 @@ import SignIn from "./components/auth/SignIn";
 import SignUp from "./components/auth/SignUp";
 import './App.css';
 
+import { uploadData } from 'aws-amplify/storage';
+import { FileUploader } from '@aws-amplify/ui-react-storage';
+import '@aws-amplify/ui-react/styles.css';
+
+import outputs from '../amplify_outputs.json';
 
 import { Button } from "@/components/ui/button"
 
 import { z } from "zod";
 
-Amplify.configure({
-  Auth: {
-    Cognito: {
-      userPoolClientId: "647p68o88lfdi0plo0thqngola",
-      userPoolId: "ap-southeast-1_HOQQzITYh"
-    },
-  }
-});
+Amplify.configure(outputs
+//   {
+//   Auth: {
+//     Cognito: {
+//       userPoolClientId: "647p68o88lfdi0plo0thqngola",
+//       userPoolId: "ap-southeast-1_HOQQzITYh"
+//     },
+//   }
+// }
+);
 
 function App() {
   const [user, setUser] = useState<{ username?: string; givenName?: string; loginId?: string } | null>(null);
@@ -35,6 +42,29 @@ function App() {
   const [formNameResult, setFormNameResult] = useState('');
   const [formPriceResult, setFormPriceResult] = useState('');
   const [loading, setLoading] = useState(false);
+  
+  const [file, setFile] = useState<File | null>(null);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFile(event.target.files?.[0] ?? null);
+  };
+
+  const handleClick = () => {
+    if (!file) {
+      return;
+    }
+    uploadData({
+      path: `photos/${file?.name}`,
+      data: file,
+      // options: {
+      //   bucket: {
+      //     bucketName: 'amplify-bucket',
+      //     region: 'ap-southeast-1'
+      //   }
+      // }
+    });
+  };
+
 
   const apiKey = "thisisasamplesecretkey27!"
   
@@ -334,6 +364,15 @@ function App() {
           editProductId={editProductId}
           loading={loading}
         />
+
+        <input type="file" onChange={handleChange} />
+        <button onClick={handleClick}>Upload</button>
+        {/* <FileUploader
+          acceptedFileTypes={['image/*']}
+          path="public/"
+          maxFileCount={1}
+          isResumable
+        /> */}
         
         <ProductTable 
           userDetails={user}

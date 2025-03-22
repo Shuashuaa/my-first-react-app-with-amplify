@@ -2,10 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
-import { uploadData } from 'aws-amplify/storage';
+// import { uploadData } from 'aws-amplify/storage';
 // import { FileUploader } from '@aws-amplify/ui-react-storage';
 import '@aws-amplify/ui-react/styles.css';
-import { ChangeEvent, useState } from "react";
+// import { ChangeEvent, useState } from "react";
 
 interface ProductFormProps {
     sampleProductName: string;
@@ -43,21 +43,21 @@ const ProductForm = ({
     // };
 
     // image upload
-    const [file, setFile] = useState<File | undefined>();
+    // const [file, setFile] = useState<File | undefined>();
 
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-      setFile(event.target.files?.[0]);
-    };
+    // const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    //   setFile(event.target.files?.[0]);
+    // };
   
-    const handleClick = () => {
-        if (!file) {
-            return;
-        }
-        uploadData({
-            path: `picture-submissions/${file.name}`,
-            data: file,
-        });
-    };
+    // const handleClick = () => {
+    //     if (!file) {
+    //         return;
+    //     }
+    //     uploadData({
+    //         path: `picture-submissions/${file.name}`,
+    //         data: file,
+    //     });
+    // };
 
     return (
         <div>
@@ -89,7 +89,7 @@ const ProductForm = ({
                     maxFileCount={1}
                     isResumable
                 /> */}
-                <input type="file" onChange={(e) => { handleChange(e); handleClick(); }} />
+                {/* <input type="file" onChange={(e) => { handleChange(e); handleClick(); }} /> */}
                 {/* <Input
                     type="file"
                     accept="image/*"
