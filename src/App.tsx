@@ -1,6 +1,7 @@
 import { Amplify } from "aws-amplify";
+import { uploadData } from 'aws-amplify/storage';
 import { getCurrentUser, fetchUserAttributes,signOut } from "aws-amplify/auth";
-import { useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import ProductForm from './components/ProductForm';
@@ -8,6 +9,7 @@ import ProductTable from './components/ProductTable';
 import SignIn from "./components/auth/SignIn";
 import SignUp from "./components/auth/SignUp";
 import './App.css';
+
 
 import { Button } from "@/components/ui/button"
 
