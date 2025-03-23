@@ -104,14 +104,15 @@ const ProductTable = ({ userDetails, data, handleEdit, deleteProduct
             <button onClick={loadNextPage}>hi!</button>
             { imageList.map((item: any) => ( 
                 <>
-                {item.path.split('/')[1]}
+                {/* {item.path.split('/')[1]} */}
+                {/* </> */}
+                <div key={item.eTag}>
+                    <img
+                    src={`https://amplify-d184ig0d30fq4u-ma-amplifyteamdrivebucket28-kmkpll7aeebi.s3.ap-southeast-1.amazonaws.com/${item.path.split('/')[1]}`}
+                    alt={item.path}
+                    />
+                </div>
                 </>
-            //     <div key={item.eTag}>
-            //         <img
-            //         src={`https://amplify-d184ig0d30fq4u-ma-amplifyteamdrivebucket28-kmkpll7aeebi.s3.ap-southeast-1.amazonaws.com/${item.path.split('/')[1]}`}
-            //         alt={item.path}
-            //         />
-            //   </div>
               
             ))}
             <table className="w-[350px] md:w-[500px] shadow">

@@ -1,9 +1,9 @@
 {
   "auth": {
-    "user_pool_id": "ap-southeast-1_siIu80xv1",
+    "user_pool_id": "ap-southeast-1_HtOyp1Mso",
     "aws_region": "ap-southeast-1",
-    "user_pool_client_id": "4pbap6n45ounrv2glhbtbb6jjv",
-    "identity_pool_id": "ap-southeast-1:87a1c62a-b156-4f61-bec6-08d521fe9de7",
+    "user_pool_client_id": "36na049ie4387ivr8vici94rbp",
+    "identity_pool_id": "ap-southeast-1:ae5aedea-6eb0-4902-9961-88717ff80f51",
     "mfa_methods": [],
     "standard_required_attributes": [
       "email"
@@ -26,7 +26,7 @@
     "unauthenticated_identities_enabled": true
   },
   "data": {
-    "url": "https://gstmmwqtzve2pfpcfazp5h7cje.appsync-api.ap-southeast-1.amazonaws.com/graphql",
+    "url": "https://k7oaliymbzft7oc42ofe4bfucy.appsync-api.ap-southeast-1.amazonaws.com/graphql",
     "aws_region": "ap-southeast-1",
     "default_authorization_type": "AWS_IAM",
     "authorization_types": [
@@ -107,11 +107,11 @@
   },
   "storage": {
     "aws_region": "ap-southeast-1",
-    "bucket_name": "amplify-d184ig0d30fq4u-ma-amplifyteamdrivebucket28-kmkpll7aeebi",
+    "bucket_name": "amplify-d1449g88siyauo-ma-amplifyteamdrivebucket28-idyrs42a7zil",
     "buckets": [
       {
         "name": "amplifyTeamDrive",
-        "bucket_name": "amplify-d184ig0d30fq4u-ma-amplifyteamdrivebucket28-kmkpll7aeebi",
+        "bucket_name": "amplify-d1449g88siyauo-ma-amplifyteamdrivebucket28-idyrs42a7zil",
         "aws_region": "ap-southeast-1"
       }
     ]
