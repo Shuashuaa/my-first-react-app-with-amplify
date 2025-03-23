@@ -89,4 +89,28 @@ VITE_API_KEY=
 API_KEY
 ```
 
+```
 To ensure the API key is securely handled and accessible during both the `build process` and `runtime`.
+
+npm create vite@latest
+typescript
+npm create amplify latest
+enter
+
+why hindi gumamit ng amplify/react-ui, limited.
+getCurrentUser from aws-amplify to fetch the authenticated user's data
+fetchUserAttributes from aws-amplify to fetch the user's attributes
+authentication of users is from cognito - signIn, signUp and signOut,
+insertion and getting of s3 files are configured with bucket policy,
+authentication for the file saving on s3 is also handled by the auth,
+@aws-amplify/ui-react-storage to display the images cloud-connect component.
+
+point out:
+everytime amplify is installed, and deployed from GitHub, it creates a congnito userpool, identitypool as well as s3 bucket.
+
+deployment:
+- must have a package-lock.json
+
+to do-
+safe the name of the file along with the inserted data and fetch it on the ui afterwards
+```
