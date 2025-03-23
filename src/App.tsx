@@ -19,17 +19,6 @@ import { Button } from "@/components/ui/button"
 
 import { z } from "zod";
 
-Amplify.configure(outputs
-//   {
-//   Auth: {
-//     Cognito: {
-//       userPoolClientId: "647p68o88lfdi0plo0thqngola",
-//       userPoolId: "ap-southeast-1_HOQQzITYh"
-//     },
-//   }
-// }
-);
-
 function App() {
   const [user, setUser] = useState<{ username?: string; givenName?: string; loginId?: string } | null>(null);
   const [loadingAccount, setLoadingAccount] = useState(true);
@@ -305,6 +294,23 @@ function App() {
     });
   }
 
+  // cognito auth
+
+  useEffect(() => {
+    console.log(outputs)
+    Amplify.configure(
+      outputs
+    //   {
+    //   Auth: {
+    //     Cognito: {
+    //       userPoolClientId: "647p68o88lfdi0plo0thqngola",
+    //       userPoolId: "ap-southeast-1_HOQQzITYh"
+    //     },
+    //   }
+    // }
+    );
+  })
+
   // start of main
 
   useEffect(() => {
@@ -364,9 +370,9 @@ function App() {
           editProductId={editProductId}
           loading={loading}
         />
-
         <input type="file" onChange={handleChange} />
         <button onClick={handleClick}>Upload</button>
+
         {/* <FileUploader
           acceptedFileTypes={['image/*']}
           path="public/"

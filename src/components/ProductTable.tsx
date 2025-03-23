@@ -1,4 +1,5 @@
 // add everything on the table as searchable
+import { list } from 'aws-amplify/storage';
 
 import { useState, useEffect } from "react";
 import { useDebounce } from "./hooks";
@@ -11,7 +12,8 @@ import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
+
 interface Product {
     id: number;
     userId: string;
@@ -68,6 +70,21 @@ const ProductTable = ({ userDetails, data, handleEdit, deleteProduct
     const currentItems = filteredItems
     .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
     .slice(firstItemIndex, lastItemIndex); // (0,5) | (5,10)
+    
+    const [imageList, setImageList] = useState<any>([]);
+    const loadNextPage = async () => {
+        const response = await list({
+          path: 'photos/',
+        });
+        if (response) {
+            console.log(response)
+            setImageList((prevItems: any) => [
+                ...prevItems,
+                ...response.items,  
+              ]);
+        }
+        // render list items from response.items
+    };
 
     return (
         <div className="list mt-5">
@@ -84,6 +101,19 @@ const ProductTable = ({ userDetails, data, handleEdit, deleteProduct
             </div>
 
         <div className="w-full md:w-[500px] mb-3">
+            <button onClick={loadNextPage}>hi!</button>
+            { imageList.map((item: any) => ( 
+                <>
+                {item.path.split('/')[1]}
+                </>
+            //     <div key={item.eTag}>
+            //         <img
+            //         src={`https://amplify-d184ig0d30fq4u-ma-amplifyteamdrivebucket28-kmkpll7aeebi.s3.ap-southeast-1.amazonaws.com/${item.path.split('/')[1]}`}
+            //         alt={item.path}
+            //         />
+            //   </div>
+              
+            ))}
             <table className="w-[350px] md:w-[500px] shadow">
                 <thead className="bg-white border border-gray-600 z-10">
                     <tr className="*:px-1 text-gray-600 *:md:text-sm *:text-[12px]">

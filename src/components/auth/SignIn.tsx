@@ -1,12 +1,12 @@
-import { Amplify } from "aws-amplify";
+// import { Amplify } from "aws-amplify";
 import { getCurrentUser, fetchUserAttributes, signIn } from "aws-amplify/auth";
 import { useState } from "react";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-import outputs from '../../../amplify_outputs.json';
+// import outputs from '../../../amplify_outputs.json';
 
-Amplify.configure(outputs
+// Amplify.configure(outputs
 //     {
 //   Auth: {
 //     Cognito: {
@@ -15,7 +15,7 @@ Amplify.configure(outputs
 //     },
 //   },
 // }
-);
+// );
 
 interface FormData {
     username: string;

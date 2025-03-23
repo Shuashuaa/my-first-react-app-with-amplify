@@ -107,11 +107,11 @@
   },
   "storage": {
     "aws_region": "ap-southeast-1",
-    "bucket_name": "amplify-vitereactproject--amplifyteamdrivebucket28-sriiwl21ovfm",
+    "bucket_name": "amplify-d184ig0d30fq4u-ma-amplifyteamdrivebucket28-kmkpll7aeebi",
     "buckets": [
       {
         "name": "amplifyTeamDrive",
-        "bucket_name": "amplify-vitereactproject--amplifyteamdrivebucket28-sriiwl21ovfm",
+        "bucket_name": "amplify-d184ig0d30fq4u-ma-amplifyteamdrivebucket28-kmkpll7aeebi",
         "aws_region": "ap-southeast-1"
       }
     ]
