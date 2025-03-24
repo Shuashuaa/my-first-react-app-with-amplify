@@ -14,7 +14,7 @@ import './App.css';
 // import { FileUploader } from '@aws-amplify/ui-react-storage';
 // import '@aws-amplify/ui-react/styles.css';
 
-import outputs from '../amplify_outputs.json';
+// import outputs from '../amplify_outputs.json';
 
 import { Button } from "@/components/ui/button"
 

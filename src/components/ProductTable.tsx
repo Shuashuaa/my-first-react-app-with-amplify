@@ -1,5 +1,5 @@
 // add everything on the table as searchable
-import { list } from 'aws-amplify/storage';
+// import { list } from 'aws-amplify/storage';
 
 import { useState, useEffect } from "react";
 import { useDebounce } from "./hooks";
