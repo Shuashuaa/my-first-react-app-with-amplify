@@ -1,5 +1,6 @@
 import { Amplify } from "aws-amplify";
 import { getCurrentUser, fetchUserAttributes, signOut } from "aws-amplify/auth";
+import { remove, uploadData } from 'aws-amplify/storage';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -9,9 +10,9 @@ import SignIn from "./components/auth/SignIn";
 import SignUp from "./components/auth/SignUp";
 import './App.css';
 
-import { uploadData } from 'aws-amplify/storage';
+// import { uploadData } from 'aws-amplify/storage';
 // import { FileUploader } from '@aws-amplify/ui-react-storage';
-import '@aws-amplify/ui-react/styles.css';
+// import '@aws-amplify/ui-react/styles.css';
 
 import outputs from '../amplify_outputs.json';
 
@@ -30,27 +31,9 @@ function App() {
   const [editProductId, setEditProductId] = useState<string | null>(null); 
   const [formNameResult, setFormNameResult] = useState('');
   const [formPriceResult, setFormPriceResult] = useState('');
-  const [loading, setLoading] = useState(false);
-  
   const [file, setFile] = useState<File | null>(null);
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFile(event.target.files?.[0] ?? null);
-  };
-
-  const handleClick = () => {
-    if (!file) {
-      return;
-    }
-    uploadData({
-      path: `photos/${file?.name}`,
-      data: file,
-      options: {
-        contentType: file.type,
-      },
-    });
-  };
-
+  const [loading, setLoading] = useState(false);
+  const [taskProductImage, setTaskProductImage] = useState('');
 
   const apiKey = "thisisasamplesecretkey27!"
   
@@ -63,8 +46,8 @@ function App() {
       message: "Product name must contain at least one letter.",
     })
     .refine((val) => {
-      const isExist = data.some(name => name.sample_product_name.toLowerCase() === val.toLowerCase()) 
-      return !isExist;
+      if (editProductId) return true; // ✅ Skip check if editing
+      return !data.some(name => name.sample_product_name.toLowerCase() === val.toLowerCase());
     }, {
       message: "Product name already exists.",
     }),
@@ -101,10 +84,13 @@ function App() {
   const addProduct = async () => {
     setLoading(true);
 
+    console.log(user?.username, sampleProductName, sampleProductPrice, file)
+
     await axios.post("https://rnz7auon30.execute-api.ap-southeast-1.amazonaws.com/insert", {
       userId: user?.username,
       sample_product_name: sampleProductName,
-      sample_product_price: sampleProductPrice
+      sample_product_price: sampleProductPrice,
+      product_image: file ? file.name : null // Include file name
     },
     {
       headers: {
@@ -115,6 +101,7 @@ function App() {
       console.log(response.data);
       setSampleProductName('');
       setSampleProductPrice('');
+      setFile(null); // Reset file after submission
       fetchData();
 
       Swal.fire({
@@ -133,73 +120,102 @@ function App() {
         toast: true,
         icon: 'error',
         position: 'top-end',
-        title: `Invalid Input, ${error}`,
+        title: `Invalid Input, ${error.response.data.message}`,
         timerProgressBar: true,
         timer: 3500,
         showCancelButton: false,
         showConfirmButton: false,
       });
       console.error(error);
-
     }).finally(() => {
       setLoading(false);
-
     });
   };
 
   const updateProduct = async () => {
     setLoading(true);
-    
-    await axios.put(`https://rnz7auon30.execute-api.ap-southeast-1.amazonaws.com/update/${editProductId}`, {
-      sample_product_name: sampleProductName,
-      sample_product_price: sampleProductPrice
-    },
-    {
-      headers: {
-        "x-api-key": apiKey
-      }
-    })
-    .then((response) => {
-      console.log(response.data);
-      setSampleProductName('');
-      setSampleProductPrice('');
-      setEditProductId(null);
-      fetchData();
 
-      Swal.fire({
-        toast: true,
-        icon: 'success',
-        position: 'top-end',
-        title: "A product is updated successfully.",
-        timerProgressBar: true,
-        timer: 3000,
-        showCancelButton: false,
-        showConfirmButton: false,
-      });
-    })
-    .catch((error) => {
-      Swal.fire({
-        toast: true,
-        icon: 'error',
-        position: 'top-end',
-        title: "Updating is Unsuccessful",
-        timerProgressBar: true,
-        timer: 3500,
-        showCancelButton: false,
-        showConfirmButton: false,
-      });
-      console.error(error);
+    try {
+        // let newFileName = taskProductImage; // Default to existing image
 
-    }).finally(() => {
-      setLoading(false);
+        if (file) {
+            // 1️⃣ Remove old image if a new file is uploaded
+            alert(taskProductImage)
+            if (taskProductImage) {
+                try {
+                    await remove({ path: `photos/${taskProductImage}` });
+                    console.log("Old image removed successfully.");
+                } catch (removeError) {
+                    console.error("Failed to remove old image:", removeError);
+                }
+            }
 
-    });
+            // 2️⃣ Upload new image
+            alert(file.name)
+            await uploadData({
+                path: `photos/${file.name}`,
+                data: file,
+                options: {
+                    contentType: file.type,
+                },
+            });
+            console.log("New image uploaded successfully.");
+        }
+
+        // 3️⃣ Update product in API
+        await axios.put(
+            `https://rnz7auon30.execute-api.ap-southeast-1.amazonaws.com/update/${editProductId}`,
+            {
+                sample_product_name: sampleProductName,
+                sample_product_price: sampleProductPrice,
+                product_image: file ? file.name : null, // Store new file name (or keep existing)
+            },
+            {
+                headers: {
+                    "x-api-key": apiKey,
+                },
+            }
+        );
+
+        // Reset form and refresh data
+        setSampleProductName('');
+        setSampleProductPrice('');
+        setEditProductId(null);
+        fetchData();
+
+        Swal.fire({
+            toast: true,
+            icon: 'success',
+            position: 'top-end',
+            title: "A product is updated successfully.",
+            timerProgressBar: true,
+            timer: 3000,
+            showCancelButton: false,
+            showConfirmButton: false,
+        });
+
+    } catch (error) {
+        console.error("Update failed:", error);
+        Swal.fire({
+            toast: true,
+            icon: 'error',
+            position: 'top-end',
+            title: "Updating is Unsuccessful",
+            timerProgressBar: true,
+            timer: 3500,
+            showCancelButton: false,
+            showConfirmButton: false,
+        });
+    } finally {
+        setLoading(false);
+    }
   };
 
   const handleEdit = (task: any) => {
     setSampleProductName(task.sample_product_name);
     setSampleProductPrice(task.sample_product_price);
     setEditProductId(task.id)
+    setTaskProductImage(task.product_image) // product_name to be updated
 
     setFormNameResult('');
     setFormPriceResult('');
@@ -239,57 +255,66 @@ function App() {
     }
   };
 
-  const deleteProduct = async (itemID : number, index: number) => {
+  const deleteProduct = async (itemID: number, task: any, index: number) => {
     Swal.fire({
       toast: true,
-      icon: 'success',
+      icon: 'warning',
       position: 'top-end',
-      title: `Are you sure to delete the Product no.${index}?`,
+      title: `Are you sure you want to delete Product no.${index}?`,
       timerProgressBar: false,
       confirmButtonColor: '#b33f40',
       showCancelButton: true,
       showConfirmButton: true,
       confirmButtonText: 'Delete',
       cancelButtonText: 'Cancel'
-    }).then(async (result: { isConfirmed: any; }) => {
+    }).then(async (result: { isConfirmed: any }) => {
+    
       if (result.isConfirmed) {
-        await axios.delete(`https://rnz7auon30.execute-api.ap-southeast-1.amazonaws.com/delete/${itemID}`,
-        {
-          headers: {
-            "x-api-key": apiKey
+        try {
+          // Delete product from API
+          await axios.delete(`https://rnz7auon30.execute-api.ap-southeast-1.amazonaws.com/delete/${itemID}`, {
+            headers: {
+              "x-api-key": apiKey
+            }
+          });
+
+          console.log(`Product ${index} deleted from database.`);
+          fetchData(); // Refresh product list
+
+          // Remove image file from S3
+          if (task.product_image) {
+            const imagePath = `photos/${task.product_image}`;
+            await remove({ path: imagePath });
+            console.log(`Image ${task.product_image} deleted from S3.`);
           }
-        })
-        .then((response) => {
-          console.log(response.data);
-          fetchData();
 
           Swal.fire({
             toast: true,
             icon: 'success',
             position: 'top-end',
-            title: "A product is deleted successfully.",
+            title: "Product deleted successfully.",
             timerProgressBar: true,
             timer: 3000,
             showCancelButton: false,
             showConfirmButton: false,
           });
-        })
-        .catch((error) => {
+
+        } catch (error) {
           Swal.fire({
             toast: true,
             icon: 'error',
             position: 'top-end',
-            title: `Can't Delete ${error}`,
+            title: `Error deleting product: ${error}`,
             timerProgressBar: true,
             timer: 3500,
             showCancelButton: false,
             showConfirmButton: false,
           });
-          console.error(error);
-        });
+          console.error("Delete error:", error);
+        }
       }
     });
-  }
+  };
 
   // cognito auth
 
@@ -355,7 +380,7 @@ function App() {
           <SignIn setUser={setUser} setIsRegistering={setIsRegistering} />
         )}
       </main>
-      <div className='flex flex-col lg:flex-row lg:gap-[50px] items-center justify-center mx-10'>
+      <div className='flex flex-col lg:flex-row lg:gap-[50px] items-center xl:items-start justify-center mx-10'>
         <ProductForm 
           sampleProductName={sampleProductName}
           formNameResult={formNameResult}
@@ -366,16 +391,9 @@ function App() {
           handleSubmit={handleSubmit}
           editProductId={editProductId}
           loading={loading}
+          file={file}
+          setFile={setFile}
         />
-        <input type="file" onChange={handleChange} />
-        <button onClick={handleClick}>Upload</button>
-
-        {/* <FileUploader
-          acceptedFileTypes={['image/*']}
-          path="public/"
-          maxFileCount={1}
-          isResumable
-        /> */}
         
         <ProductTable 
           userDetails={user}

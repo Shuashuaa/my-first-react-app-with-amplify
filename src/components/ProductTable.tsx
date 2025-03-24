@@ -19,13 +19,14 @@ interface Product {
     userId: string;
     sample_product_name: string;
     sample_product_price: string;
+    product_image: string;
     created_at: string;
 }
 interface ProductTableProps {
     userDetails: { username?: string; givenName?: string; loginId?: string } | null;
     data: Product[];
     handleEdit: (task: Product) => void;
-    deleteProduct: (id: number, index: number) => void;
+    deleteProduct: (id: number, task: any, index: number) => void;
 }
 
 const ProductTable = ({ userDetails, data, handleEdit, deleteProduct 
@@ -71,23 +72,23 @@ const ProductTable = ({ userDetails, data, handleEdit, deleteProduct
     .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
     .slice(firstItemIndex, lastItemIndex); // (0,5) | (5,10)
     
-    const [imageList, setImageList] = useState<any>([]);
-    const loadNextPage = async () => {
-        const response = await list({
-          path: 'photos/',
-        });
-        if (response) {
-            console.log(response)
-            setImageList((prevItems: any) => [
-                ...prevItems,
-                ...response.items,  
-              ]);
-        }
+    // const [imageList, setImageList] = useState<any>([]);
+    // const loadNextPage = async () => {
+    //     const response = await list({
+    //       path: 'photos/',
+    //     });
+    //     if (response) {
+    //         console.log(response)
+    //         setImageList((prevItems: any) => [
+    //             ...prevItems,
+    //             ...response.items,  
+    //           ]);
+    //     }
         // render list items from response.items
-    };
+    // };
 
     return (
-        <div className="list mt-5">
+        <div className="list mt-5 xl:mt-0">
 
             {/* Filter Input */}
             <div className="md:flex justify-between mb-4">
@@ -100,81 +101,85 @@ const ProductTable = ({ userDetails, data, handleEdit, deleteProduct
                 </div>
             </div>
 
-        <div className="w-full md:w-[500px] mb-3">
-            <button onClick={loadNextPage}>hi!</button>
-            {imageList.map((item: any) => (
-                <div key={item.eTag}> {/* Use eTag as the key */}    
-                    <img
-                    src={`https://amplify-d184ig0d30fq4u-ma-amplifyteamdrivebucket28-kmkpll7aeebi.s3.ap-southeast-1.amazonaws.com/${item.path.split('/')[1]}`}
-                    alt={item.path}
-                    />
-                </div>
-            ))}
-            <table className="w-[350px] md:w-[500px] shadow">
-                <thead className="bg-white border border-gray-600 z-10">
-                    <tr className="*:px-1 text-gray-600 *:md:text-sm *:text-[12px]">
-                        <th className="border border-gray-300">No</th>
-                        <th className="w-[120px] border border-gray-300">Product Name</th>
-                        <th className="border border-gray-300">Product Price</th>
-                        <th className="border border-gray-300">Created Date</th>
-                        <th className="border border-gray-300">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {currentItems
-                    .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
-                    .map((task, index) => (
-                        <tr key={task.id} className="border border-gray-300 *:p-1 hover:bg-gray-100 *:text-sm">
-                            <td className="border border-gray-300 p-2 text-center">{firstItemIndex + index + 1}</td>
-                            <td className="border border-gray-300 p-2">{task.sample_product_name}</td>
-                            <td className="border border-gray-300 p-2 text-center">
-                                ₱{parseFloat(task.sample_product_price).toLocaleString()}
-                            </td>
-                            <td className="border border-gray-300 p-2 text-center">{new Date(task.created_at).toISOString().split("T")[0]}</td>
-                            <td className="grid gap-2">
-                                
-                                { itemsPerPage == 5 ?
-                                <div className="grid sm:grid-cols-2">
-                                    <Button disabled={userDetails?.username ? false : true} className="shadow border text-gray-700 bg-green-300 rounded-md hover:bg-green-400" onClick={() => handleEdit(task)}>
-                                        Edit
-                                    </Button>
-                                    <Button disabled={userDetails?.username ? false : true} className="shadow border text-gray-700 bg-red-300 rounded-md hover:bg-red-400" onClick={() => deleteProduct(task.id, firstItemIndex + index + 1)}>
-                                        Delete
-                                    </Button>
-                                </div>
-                                :
-                                <>
-                                    <Popover>
-                                        <PopoverTrigger asChild>
-                                            <Button className="bg-gray-300 text-black">...</Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent>
-                                            <p>{task.sample_product_name}</p>
-                                            <div className="grid grid-cols-2">
-                                                <Button className="shadow border text-gray-700 bg-green-300 rounded-md hover:bg-green-400" onClick={() => handleEdit(task)}>
-                                                Edit
-                                                </Button>
-                                                <Button className="shadow border text-gray-700 bg-red-300 rounded-md hover:bg-red-400" onClick={() => deleteProduct(task.id, firstItemIndex + index + 1)}>
-                                                Delete
-                                                </Button>
-                                            </div>
-                                        </PopoverContent>
-                                    </Popover>
-                                </>
-                                }
-                            </td>
+            <div className="w-full md:w-[500px] mb-3">
+                {/* <button onClick={loadNextPage}>hi!</button>
+                {imageList.map((item: any) => (
+                    <div key={item.eTag}> 
+                        <img
+                            src={`https://amplify-d2htcnpo66lqyx-ma-amplifyteamdrivebucket28-vu8nmztglqdy.s3.ap-southeast-2.amazonaws.com/${item.path}`}
+                            alt={item.path}
+                        />
+                    </div>
+                ))} */}
+                <table className="w-[350px] md:w-[500px] shadow">
+                    <thead className="bg-white border border-gray-600 z-10">
+                        <tr className="*:px-1 text-gray-600 *:md:text-sm *:text-[12px]">
+                            <th className="border border-gray-300">No</th>
+                            <th className="w-[120px] border border-gray-300">Img</th>
+                            <th className="w-[120px] border border-gray-300">Product Name</th>
+                            <th className="border border-gray-300">Product Price</th>
+                            <th className="border border-gray-300">Created Date</th>
+                            <th className="border border-gray-300">Actions</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        {currentItems
+                        .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+                        .map((task, index) => (
+                            <tr key={task.id} className="border border-gray-300 *:p-1 hover:bg-gray-100 *:text-sm">
+                                <td className="border border-gray-300 p-2 text-center">{firstItemIndex + index + 1}</td>
+                                <td className="border border-gray-300 p-2">
+                                    <img className='w-[80px] h-[80px] object-contain' src={`https://amplify-d2htcnpo66lqyx-ma-amplifyteamdrivebucket28-vu8nmztglqdy.s3.ap-southeast-2.amazonaws.com/photos/${task.product_image}`} alt={task.product_image} />
+                                </td>
+                                <td className="border border-gray-300 p-2">{task.sample_product_name}</td>
+                                <td className="border border-gray-300 p-2 text-center">
+                                    ₱{parseFloat(task.sample_product_price).toLocaleString()}
+                                </td>
+                                <td className="border border-gray-300 p-2 text-center">{new Date(task.created_at).toISOString().split("T")[0]}</td>
+                                <td className="grid gap-2">
+                                    
+                                    { itemsPerPage == 5 ?
+                                    <div className="grid ">
+                                        <Button disabled={userDetails?.username ? false : true} className="shadow border text-gray-700 bg-green-300 rounded-md hover:bg-green-400" onClick={() => handleEdit(task)}>
+                                            Edit
+                                        </Button>
+                                        <Button  className="shadow border text-gray-700 bg-red-300 rounded-md hover:bg-red-400" onClick={() => deleteProduct(task.id, task, firstItemIndex + index + 1)}>
+                                            Delete
+                                        </Button>
+                                    </div>
+                                    :
+                                    <>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <Button className="bg-gray-300 text-black">...</Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent>
+                                                <p>{task.sample_product_name}</p>
+                                                <div className="grid grid-cols-2">
+                                                    <Button className="shadow border text-gray-700 bg-green-300 rounded-md hover:bg-green-400" onClick={() => handleEdit(task)}>
+                                                    Edit
+                                                    </Button>
+                                                    <Button className="shadow border text-gray-700 bg-red-300 rounded-md hover:bg-red-400" onClick={() => deleteProduct(task.id, task, firstItemIndex + index + 1)}>
+                                                    Delete
+                                                    </Button>
+                                                </div>
+                                            </PopoverContent>
+                                        </Popover>
+                                    </>
+                                    }
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
 
-        <PaginationSection 
-            totalItems={filteredItems.length} 
-            itemsPerPage={itemsPerPage} 
-            currentPage={currentPage} 
-            setCurrentPage={setCurrentPage} 
-        />
+            <PaginationSection 
+                totalItems={filteredItems.length} 
+                itemsPerPage={itemsPerPage} 
+                currentPage={currentPage} 
+                setCurrentPage={setCurrentPage} 
+            />
         </div>
     );
 };
