@@ -45,12 +45,9 @@ function App() {
     uploadData({
       path: `photos/${file?.name}`,
       data: file,
-      // options: {
-      //   bucket: {
-      //     bucketName: 'amplify-bucket',
-      //     region: 'ap-southeast-1'
-      //   }
-      // }
+      options: {
+        contentType: file.type,
+      },
     });
   };
 
