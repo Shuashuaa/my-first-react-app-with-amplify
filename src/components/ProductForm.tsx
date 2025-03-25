@@ -17,6 +17,7 @@ interface ProductFormProps {
     editProductId: string | null;
     loading: boolean;
     file: File | null;
+    formFileResult: string;
     setFile: any;
     fileInputRef: any;
     handleReset: () => void;
@@ -33,6 +34,7 @@ const ProductForm = ({
     editProductId,
     loading,
     file,
+    formFileResult,
     setFile,
     fileInputRef,
     handleReset,
@@ -43,7 +45,6 @@ const ProductForm = ({
     // };
 
     const handleClick = async (): Promise<boolean> => {
-        
         if (!file || !sampleProductName || !sampleProductPrice) {
             console.error("Missing required fields.");
             Swal.fire({
@@ -56,10 +57,10 @@ const ProductForm = ({
                 showCancelButton: false,
                 showConfirmButton: false,
             });
-            return false;
+            return true;
         }
     
-        const filePath = `photos/${file.name}`;
+        const filePath = `photos/${file?.name}`;
     
         try {
             console.log(filePath, '???')
@@ -79,11 +80,11 @@ const ProductForm = ({
         } catch (error) {
             if (error instanceof StorageError && error.name === "NotFound") {
                 try {
-                    await uploadData({
+                    uploadData({
                         path: filePath,
                         data: file,
                         options: {
-                            contentType: file.type,
+                            contentType: file?.type,
                         },
                     });
                     console.log("File uploaded successfully.");
@@ -133,6 +134,7 @@ const ProductForm = ({
                     ref={fileInputRef}  // No type errors now
                     onChange={(e) => setFile(e.target.files?.[0] ?? null)} 
                 />  
+                {formFileResult && <p className="text-red-400 text-sm">{formFileResult}</p>}
 
                 <Button 
                     className="w-[350px] my-2" 
@@ -143,6 +145,7 @@ const ProductForm = ({
                         // If editing an existing product, run handleClick for images
                         if (editProductId) {
                             handleSubmit(e);
+                            console.log('asdasdasdasdasd')
                             return;
                         }
 

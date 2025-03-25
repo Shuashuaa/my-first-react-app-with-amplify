@@ -32,6 +32,7 @@ function App() {
   const [formNameResult, setFormNameResult] = useState('');
   const [formPriceResult, setFormPriceResult] = useState('');
   const [file, setFile] = useState<File | null>(null);
+  const [formFileResult, setFormFileResult] = useState('');
   const [loading, setLoading] = useState(false);
   const [taskProductImage, setTaskProductImage] = useState('');
 
@@ -55,6 +56,10 @@ function App() {
     price: z.string().regex(/^\d+(\.\d{1,2})?$/, {
       message: "Price must be a valid number.",
     }),
+
+    ...(editProductId ? {} : { 
+      file: z.instanceof(File, { message: "File is required." }) 
+    })
   });
 
   const fetchData = () => { 
@@ -134,7 +139,7 @@ function App() {
 
   const updateProduct = async () => {
     setLoading(true);
-
+    
     try {
       if (file) {
         alert(taskProductImage)
@@ -217,18 +222,21 @@ function App() {
 
     setFormNameResult('');
     setFormPriceResult('');
+    setFormFileResult('');
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-
+ 
     e.preventDefault();
 
     const result = ProductSchema.safeParse({
       name: sampleProductName,
       price: sampleProductPrice,
+      ...(editProductId ? {} : { file })
     });
 
     if (result.success) {
+      
       // Call either add or update
       if (editProductId) {
         updateProduct();
@@ -238,18 +246,24 @@ function App() {
 
       setFormNameResult('');
       setFormPriceResult('');
+      setFormFileResult('');
 
     } else {
+      console.log('still error ?!?', editProductId)
       // Set form errors in state
       const formatted = result.error.format();
-      // console.log(formatted.name?._errors[0])
-      // console.log(formatted.price?._errors[0])
 
       const nameError = formatted.name?._errors[0] ?? '';
-      const priceError = formatted.price?._errors[0] ?? ''; 
+      const priceError = formatted.price?._errors[0] ?? '';  
 
       setFormNameResult(nameError);
       setFormPriceResult(priceError);
+
+      if (!editProductId && formatted.file) {
+        setFormFileResult(formatted.file._errors[0]);
+      } else {
+        setFormFileResult('');
+      }
     }
   };
 
@@ -404,6 +418,7 @@ function App() {
           editProductId={editProductId}
           loading={loading}
           file={file}
+          formFileResult={formFileResult}
           setFile={setFile}
           fileInputRef={fileInputRef}
           handleReset={handleReset}
