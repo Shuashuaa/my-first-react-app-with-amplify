@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { uploadData, getProperties, StorageError } from 'aws-amplify/storage';
 import '@aws-amplify/ui-react/styles.css';
-import { useRef } from "react";
 import Swal from "sweetalert2";
 
 interface ProductFormProps {
@@ -19,6 +18,8 @@ interface ProductFormProps {
     loading: boolean;
     file: File | null;
     setFile: any;
+    fileInputRef: any;
+    handleReset: () => void;
 }
 
 const ProductForm = ({
@@ -33,24 +34,35 @@ const ProductForm = ({
     loading,
     file,
     setFile,
+    fileInputRef,
+    handleReset,
 }: ProductFormProps) => {
 
-    const fileInputRef = useRef<HTMLInputElement>(null);
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setFile(event.target.files?.[0] ?? null);
-    };
+    // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     setFile(event.target.files?.[0] ?? null);
+    // };
 
     const handleClick = async (): Promise<boolean> => {
         
         if (!file || !sampleProductName || !sampleProductPrice) {
             console.error("Missing required fields.");
+            Swal.fire({
+                toast: true,
+                icon: 'error',
+                position: 'top-end',
+                title: `Image is missing`,
+                timerProgressBar: true,
+                timer: 3000,
+                showCancelButton: false,
+                showConfirmButton: false,
+            });
             return false;
         }
     
         const filePath = `photos/${file.name}`;
     
         try {
+            console.log(filePath, '???')
             await getProperties({ path: filePath });
             console.error("File already exists.");
             Swal.fire({
@@ -76,6 +88,7 @@ const ProductForm = ({
                     });
                     console.log("File uploaded successfully.");
                     handleReset();
+
                     return true;
 
                 } catch (uploadError) {
@@ -86,13 +99,6 @@ const ProductForm = ({
                 console.error("Error checking file existence:", error);
                 return false;
             }
-        }
-    };
-
-    const handleReset = () => {
-        setFile(null);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = ""; // Clear file input field
         }
     };
 
@@ -120,7 +126,13 @@ const ProductForm = ({
 
                 {/* Image Upload Input */}
                 <Label htmlFor="file_input" className="text-sm font-bold">Upload an Image</Label>
-                <input id="file_input" type="file" ref={fileInputRef} onChange={handleChange} />
+                {/* <input id="file_input" type="file" ref={fileInputRef} onChange={handleChange} /> */}
+                <input 
+                    id="file_input" 
+                    type="file" 
+                    ref={fileInputRef}  // No type errors now
+                    onChange={(e) => setFile(e.target.files?.[0] ?? null)} 
+                />  
 
                 <Button 
                     className="w-[350px] my-2" 

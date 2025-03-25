@@ -1,7 +1,7 @@
 import { Amplify } from "aws-amplify";
 import { getCurrentUser, fetchUserAttributes, signOut } from "aws-amplify/auth";
 import { remove, uploadData } from 'aws-amplify/storage';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import ProductForm from './components/ProductForm';
@@ -77,9 +77,9 @@ function App() {
     fetchData();
   }, []); 
 
-  useEffect(() => {
-    console.log(data.some(name => name === "qweqeqweqwe"))
-  }, [data]); 
+  // useEffect(() => {
+  //   console.log(data.some(name => name === "qweqeqweqwe"))
+  // }, [data]); 
 
   const addProduct = async () => {
     setLoading(true);
@@ -136,81 +136,79 @@ function App() {
     setLoading(true);
 
     try {
-        // let newFileName = taskProductImage; // Default to existing image
+      if (file) {
+        alert(taskProductImage)
 
-        if (file) {
-            // 1️⃣ Remove old image if a new file is uploaded
-            alert(taskProductImage)
-            if (taskProductImage) {
-                try {
-                    await remove({ path: `photos/${taskProductImage}` });
-                    console.log("Old image removed successfully.");
-                } catch (removeError) {
-                    console.error("Failed to remove old image:", removeError);
-                }
-            }
-
-            // 2️⃣ Upload new image
-            alert(file.name)
-            await uploadData({
-                path: `photos/${file.name}`,
-                data: file,
-                options: {
-                    contentType: file.type,
-                },
-            });
-            console.log("New image uploaded successfully.");
+        // remove()
+        if (taskProductImage) {
+          try {
+            await remove({ path: `photos/${taskProductImage}` });
+            console.log("Old image removed successfully.");
+          } catch (removeError) {
+            console.error("Failed to remove old image:", removeError);
+          }
         }
-
-        // 3️⃣ Update product in API
-        await axios.put(
-            `https://rnz7auon30.execute-api.ap-southeast-1.amazonaws.com/update/${editProductId}`,
-            {
-                sample_product_name: sampleProductName,
-                sample_product_price: sampleProductPrice,
-                product_image: file ? file.name : null, // Store new file name (or keep existing)
-            },
-            {
-                headers: {
-                    "x-api-key": apiKey,
-                },
-            }
-        );
-
-        // Reset form and refresh data
-        setSampleProductName('');
-        setSampleProductPrice('');
-        setEditProductId(null);
-        fetchData();
-
-        Swal.fire({
-            toast: true,
-            icon: 'success',
-            position: 'top-end',
-            title: "A product is updated successfully.",
-            timerProgressBar: true,
-            timer: 3000,
-            showCancelButton: false,
-            showConfirmButton: false,
+        // uploadData
+        alert(file.name)
+        await uploadData({
+          path: `photos/${file.name}`,
+          data: file,
+          options: {
+            contentType: file.type,
+          },
         });
+        console.log("New image uploaded successfully.");
+      }
+      // update the data
+      await axios.put(
+        `https://rnz7auon30.execute-api.ap-southeast-1.amazonaws.com/update/${editProductId}`,
+        {
+          sample_product_name: sampleProductName,
+          sample_product_price: sampleProductPrice,
+          product_image: file ? file.name : null, // Store new file name (or keep existing)
+        },
+        {
+          headers: {
+            "x-api-key": apiKey,
+          },
+        }
+      );
+
+      // Reset form and refresh data
+      setSampleProductName('');
+      setSampleProductPrice('');
+      setEditProductId(null);
+      handleReset();
+      fetchData();
+
+      Swal.fire({
+        toast: true,
+        icon: 'success',
+        position: 'top-end',
+        title: "A product is updated successfully.",
+        timerProgressBar: true,
+        timer: 3000,
+        showCancelButton: false,
+        showConfirmButton: false,
+      });
 
     } catch (error) {
-        console.error("Update failed:", error);
-        Swal.fire({
-            toast: true,
-            icon: 'error',
-            position: 'top-end',
-            title: "Updating is Unsuccessful",
-            timerProgressBar: true,
-            timer: 3500,
-            showCancelButton: false,
-            showConfirmButton: false,
-        });
+      console.error("Update failed:", error);
+      Swal.fire({
+        toast: true,
+        icon: 'error',
+        position: 'top-end',
+        title: "Updating is Unsuccessful",
+        timerProgressBar: true,
+        timer: 3500,
+        showCancelButton: false,
+        showConfirmButton: false,
+      });
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
-
+  
   const handleEdit = (task: any) => {
     setSampleProductName(task.sample_product_name);
     setSampleProductPrice(task.sample_product_price);
@@ -252,6 +250,18 @@ function App() {
 
       setFormNameResult(nameError);
       setFormPriceResult(priceError);
+    }
+  };
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleReset = () => {
+      setFile(null);
+      
+      // Clear the file input field
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""; 
+        fileInputRef.current.focus(); 
     }
   };
 
@@ -319,7 +329,7 @@ function App() {
   // cognito auth
 
   useEffect(() => {
-    console.log(outputs)
+    // console.log(outputs)
     Amplify.configure(
       outputs
     //   {
@@ -346,6 +356,8 @@ function App() {
           givenName: attributes.given_name ?? "User",
           loginId: authUser.signInDetails?.loginId ?? authUser.username,
         });
+
+        console.log(authUser, 'checkUser')
       } catch (error) {
         setUser(null);
       } finally {
@@ -393,6 +405,8 @@ function App() {
           loading={loading}
           file={file}
           setFile={setFile}
+          fileInputRef={fileInputRef}
+          handleReset={handleReset}
         />
         
         <ProductTable 

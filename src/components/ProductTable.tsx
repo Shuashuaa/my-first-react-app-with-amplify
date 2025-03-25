@@ -143,7 +143,7 @@ const ProductTable = ({ userDetails, data, handleEdit, deleteProduct
                                         <Button disabled={userDetails?.username ? false : true} className="shadow border text-gray-700 bg-green-300 rounded-md hover:bg-green-400" onClick={() => handleEdit(task)}>
                                             Edit
                                         </Button>
-                                        <Button  className="shadow border text-gray-700 bg-red-300 rounded-md hover:bg-red-400" onClick={() => deleteProduct(task.id, task, firstItemIndex + index + 1)}>
+                                        <Button disabled={userDetails?.username ? false : true} className="shadow border text-gray-700 bg-red-300 rounded-md hover:bg-red-400" onClick={() => deleteProduct(task.id, task, firstItemIndex + index + 1)}>
                                             Delete
                                         </Button>
                                     </div>
