@@ -176,17 +176,17 @@ const ProductTable = ({ userDetails, data, handleEdit, deleteProduct
                                 </div>
                                 {/* } */}
                             </div>
-                            <figcaption className="absolute bottom-8 left-2/4 flex w-[calc(100%-4rem)] -translate-x-2/4 justify-between rounded-xl border border-white bg-white/70 py-2 px-6 shadow-lg shadow-black/5 saturate-200 backdrop-blur-sm 
+                            <figcaption className="absolute bottom-8 left-2/4 flex w-[calc(100%-4rem)] -translate-x-2/4 justify-between rounded-xl border border-white bg-white/75 py-2 px-6 shadow-lg shadow-black/5 saturate-200 backdrop-blur-sm 
                             transition-all duration-500 delay-300 opacity-100 
                             group-hover:opacity-0 group-hover:pointer-events-none 
                             hover:opacity-100 hover:pointer-events-auto"
                             >
                                 <div>
-                                    <h5 className="text-medium font-semibold text-slate-800">
+                                    <h5 className="text-lg font-bold text-slate-800">
                                         {task.sample_product_name}
                                     </h5>
                                     <div className="flex justify-between">
-                                        <p className="text-slate-600">
+                                        <p className="text-sm font-semibold text-slate-600">
                                             ₱{parseFloat(task.sample_product_price).toLocaleString()}
                                         </p>
                                     </div>
