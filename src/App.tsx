@@ -392,7 +392,7 @@ function App() {
 
   return (
     <div className="h-svh">
-      <main className="pr-5 pt-5 w-full text-right">
+      <main className="pr-3 pt-3 w-full text-right">
         {user ? (
           <>
             <h2>Hello,<b>{user.givenName}!</b></h2>
@@ -406,6 +406,9 @@ function App() {
           <SignIn setUser={setUser} setIsRegistering={setIsRegistering} />
         )}
       </main>
+
+      <div className="w-full h-px bg-gradient-to-r from-transparent via-slate-300/80 to-transparent mb-7"></div>
+
       <div className='flex flex-col lg:flex-row lg:gap-[50px] items-center xl:items-start justify-center mx-10'>
         <ProductForm 
           sampleProductName={sampleProductName}

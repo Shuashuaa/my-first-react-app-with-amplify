@@ -65,6 +65,7 @@ const ProductForm = ({
         try {
             console.log(filePath, '???')
             await getProperties({ path: filePath });
+            
             console.error("File already exists.");
             Swal.fire({
                 toast: true,
@@ -77,6 +78,7 @@ const ProductForm = ({
                 showConfirmButton: false,
             });
             return false;
+
         } catch (error) {
             if (error instanceof StorageError && error.name === "NotFound") {
                 try {
@@ -117,7 +119,7 @@ const ProductForm = ({
                 {formNameResult && <p className="text-red-400 text-sm">{formNameResult}</p>}
                 
                 <Label className="text-sm font-bold">Enter a Product Price</Label>
-                <Input 
+                <Input
                     value={sampleProductPrice}
                     onChange={(e) => setSampleProductPrice(e.target.value)}
                     className="w-full shadow appearance-none border border-gray-400 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 

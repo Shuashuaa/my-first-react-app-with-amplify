@@ -80,7 +80,7 @@ function SignUp({ setIsRegistering }: { setIsRegistering: Function }
 
     return (
         <div className="w-full flex justify-end p-5">
-            <form className='flex flex-col gap-1 text-left w-1/4' onSubmit={handleSignUp}>
+            <form className='flex flex-col gap-1 text-left' onSubmit={handleSignUp}>
                 <h1>Register</h1>
                 {error && <p style={{ color: "red" }}>{error}</p>}
                 <Input

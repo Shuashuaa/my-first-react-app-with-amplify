@@ -41,7 +41,7 @@ const ProductTable = ({ userDetails, data, handleEdit, deleteProduct
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth >= 1024) {
-                setItemsPerPage(5);
+                setItemsPerPage(6);
             } else {
                 setItemsPerPage(4);
             }
@@ -88,7 +88,7 @@ const ProductTable = ({ userDetails, data, handleEdit, deleteProduct
     // };
 
     return (
-        <div className="list mt-5 xl:mt-0">
+        <div className="list my-5 xl:mt-0">
 
             {/* Filter Input */}
             <div className="md:flex justify-between mb-4">
@@ -101,7 +101,7 @@ const ProductTable = ({ userDetails, data, handleEdit, deleteProduct
                 </div>
             </div>
 
-            <div className="w-full md:w-[500px] mb-3">
+            <div className="w-full md:w-full mb-3">
                 {/* <button onClick={loadNextPage}>hi!</button>
                 {imageList.map((item: any) => (
                     <div key={item.eTag}> 
@@ -111,67 +111,93 @@ const ProductTable = ({ userDetails, data, handleEdit, deleteProduct
                         />
                     </div>
                 ))} */}
-                <table className="w-[350px] md:w-[500px] shadow">
-                    <thead className="bg-white border border-gray-600 z-10">
-                        <tr className="*:px-1 text-gray-600 *:md:text-sm *:text-[12px]">
-                            <th className="border border-gray-300">No</th>
-                            <th className="w-[120px] border border-gray-300">Img</th>
-                            <th className="w-[120px] border border-gray-300">Product Name</th>
-                            <th className="border border-gray-300">Product Price</th>
-                            <th className="border border-gray-300">Created Date</th>
-                            <th className="border border-gray-300">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {currentItems
-                        .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
-                        .map((task, index) => (
-                            <tr key={task.id} className="border border-gray-300 *:p-1 hover:bg-gray-100 *:text-sm">
-                                <td className="border border-gray-300 p-2 text-center">{firstItemIndex + index + 1}</td>
-                                <td className="border border-gray-300 p-2">
-                                    <img className='w-[80px] h-[80px] object-contain' src={`https://amplify-d2htcnpo66lqyx-ma-amplifyteamdrivebucket28-vu8nmztglqdy.s3.ap-southeast-2.amazonaws.com/photos/${task.product_image}`} alt={task.product_image} />
-                                </td>
-                                <td className="border border-gray-300 p-2">{task.sample_product_name}</td>
-                                <td className="border border-gray-300 p-2 text-center">
-                                    ₱{parseFloat(task.sample_product_price).toLocaleString()}
-                                </td>
-                                <td className="border border-gray-300 p-2 text-center">{new Date(task.created_at).toISOString().split("T")[0]}</td>
-                                <td className="grid gap-2">
-                                    
-                                    { itemsPerPage == 5 ?
-                                    <div className="grid ">
-                                        <Button disabled={userDetails?.username ? false : true} className="shadow border text-gray-700 bg-green-300 rounded-md hover:bg-green-400" onClick={() => handleEdit(task)}>
-                                            Edit
-                                        </Button>
-                                        <Button disabled={userDetails?.username ? false : true} className="shadow border text-gray-700 bg-red-300 rounded-md hover:bg-red-400" onClick={() => deleteProduct(task.id, task, firstItemIndex + index + 1)}>
-                                            Delete
-                                        </Button>
+                {/* <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 min-h-[140px] 
+                w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible"
+                ></div> */}
+                <div className="grid grid-col-1 sm:grid-cols-2 md:grid-cols-2 gap-4 min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg lg:overflow-visible">
+                    {currentItems
+                    .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+                    .map((task, index) => (
+                        <figure key={task.id || index} className="relative w-[300px] h-[300px] group">
+                            <img className="object-cover object-center w-full h-full rounded-xl"
+                            src={`https://amplify-d2htcnpo66lqyx-ma-amplifyteamdrivebucket28-vu8nmztglqdy.s3.ap-southeast-2.amazonaws.com/photos/${task.product_image}`} 
+                            alt={task.product_image}/> 
+
+                            <div className="absolute top-5 right-5">
+                                                                
+                                {/* { itemsPerPage == 6 ?
+                                <div className="flex flex-col">
+                                    <Button 
+                                     userDetails?.username ? false : true
+                                        disabled={!userDetails?.username} 
+                                        className="shadow border text-gray-700 bg-green-300 rounded-md hover:bg-green-400" 
+                                        onClick={() => handleEdit(task)}
+                                    >
+                                        Edit
+                                    </Button>
+                                    <Button 
+                                        disabled={userDetails?.username ? false : true} 
+                                        className="shadow border text-gray-700 bg-red-300 rounded-md hover:bg-red-400" 
+                                        onClick={() => deleteProduct(task.id, task, firstItemIndex + index + 1)}
+                                    >
+                                        Delete
+                                    </Button>
+                                </div>
+                                : */}
+                                <div className="flex justify-center">
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <Button className="bg-gray-300 text-black rounded-3xl bg-white/50 backdrop-blur-sm">...</Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent>
+                                            <p>{task.sample_product_name}</p>
+                                            <div className="grid grid-cols-2">
+                                                <Button 
+                                                    disabled={userDetails?.username ? false : true}
+                                                    className="shadow border text-gray-700 bg-green-300 rounded-md hover:bg-green-400" 
+                                                    onClick={() => handleEdit(task)}>
+                                                Edit
+                                                </Button>
+                                                <Button 
+                                                    disabled={userDetails?.username ? false : true}
+                                                    className="shadow border text-gray-700 bg-red-300 rounded-md hover:bg-red-400" 
+                                                    onClick={() => deleteProduct(task.id, task, firstItemIndex + index + 1)}>
+                                                Delete
+                                                </Button>
+                                            </div>
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
+                                {/* } */}
+                            </div>
+                            <figcaption className="absolute bottom-8 left-2/4 flex w-[calc(100%-4rem)] -translate-x-2/4 justify-between rounded-xl border border-white bg-white/75 py-2 px-6 shadow-lg shadow-black/5 saturate-200 backdrop-blur-sm 
+                            transition-all duration-500 delay-300 opacity-100 
+                            group-hover:opacity-0 group-hover:pointer-events-none 
+                            hover:opacity-100 hover:pointer-events-auto"
+                            >
+                                <div>
+                                    <h5 className="text-xl font-medium text-slate-800">
+                                    {task.sample_product_name}
+                                    </h5>
+                                    <div className="flex justify-between">
+                                        <p className="text-slate-600">
+                                            ₱{parseFloat(task.sample_product_price).toLocaleString()}
+                                        </p>
+                                        {/* <p className="mt-2 text-slate-600">
+                                            ₱{parseFloat(task.sample_product_price).toLocaleString()}
+                                        </p> */}
                                     </div>
-                                    :
-                                    <>
-                                        <Popover>
-                                            <PopoverTrigger asChild>
-                                                <Button className="bg-gray-300 text-black">...</Button>
-                                            </PopoverTrigger>
-                                            <PopoverContent>
-                                                <p>{task.sample_product_name}</p>
-                                                <div className="grid grid-cols-2">
-                                                    <Button className="shadow border text-gray-700 bg-green-300 rounded-md hover:bg-green-400" onClick={() => handleEdit(task)}>
-                                                    Edit
-                                                    </Button>
-                                                    <Button className="shadow border text-gray-700 bg-red-300 rounded-md hover:bg-red-400" onClick={() => deleteProduct(task.id, task, firstItemIndex + index + 1)}>
-                                                    Delete
-                                                    </Button>
-                                                </div>
-                                            </PopoverContent>
-                                        </Popover>
-                                    </>
-                                    }
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                                    <p className="mt-2 text-sm text-slate-600">
+                                        added by: {`${task.userId.slice(0, 4)}...`}
+                                    </p>
+                                </div>
+                                {/* <h5 className="text-xl font-medium text-slate-800">
+                                    Growth
+                                </h5> */}
+                            </figcaption>
+                        </figure>
+                    ))}
+                </div>
             </div>
 
             <PaginationSection 
