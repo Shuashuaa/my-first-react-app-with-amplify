@@ -98,7 +98,7 @@ const ProductTable = ({ userDetails, data, handleEdit, deleteProduct
 
             {/* Filter Input */}
             <div className="md:flex justify-between mb-4">
-                <h1 className="text-2xl mb-2">List of Products</h1>
+                <h1 className="text-2xl mb-2">Products ({data.length})</h1>
                 <div className="relative w-full md:w-[230px]">
                     <FilterInput 
                         filterQuery={filterQuery} 
