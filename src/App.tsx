@@ -2,6 +2,7 @@ import { Amplify } from "aws-amplify";
 import { getCurrentUser, fetchUserAttributes, signOut } from "aws-amplify/auth";
 import { remove, uploadData } from 'aws-amplify/storage';
 import { useEffect, useState, useRef } from 'react';
+import { Loader2 } from "lucide-react";
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import ProductForm from './components/ProductForm';
@@ -34,6 +35,7 @@ function App() {
   const [file, setFile] = useState<File | null>(null);
   const [formFileResult, setFormFileResult] = useState('');
   const [loading, setLoading] = useState(false);
+  const [signOutLoading, setSignOutLoading] = useState(false);
   const [taskProductImage, setTaskProductImage] = useState('');
 
   const apiKey = "thisisasamplesecretkey27!"
@@ -382,8 +384,10 @@ function App() {
   }, []);
 
   async function handleSignOut() {
+    setSignOutLoading(true);
     await signOut();
     setUser(null);
+    setSignOutLoading(false);
   }
 
   if (loadingAccount) return <h1>Loading...</h1>;
@@ -398,12 +402,26 @@ function App() {
             <h2>Hello,<b>{user.givenName}!</b></h2>
             <h1>Welcome, {user.username}!</h1>
             <p>Login ID: {user.loginId}</p>
-            <Button className="mt-2" onClick={handleSignOut}>Sign out</Button>
+            <Button 
+              disabled={signOutLoading}
+              className="mt-2 mb-5" 
+              onClick={handleSignOut}
+            >
+              {signOutLoading ? (
+                <>
+                  <Loader2 className="animate-spin mr-2" />
+                  Loading...
+                </>
+              ) : 'Sign out'}
+            </Button>
           </>
         ) : isRegistering ? (
-          <SignUp setIsRegistering={setIsRegistering} />
+          <SignUp 
+            setIsRegistering={setIsRegistering} />
         ) : (
-          <SignIn setUser={setUser} setIsRegistering={setIsRegistering} />
+          <SignIn
+            setUser={setUser} 
+            setIsRegistering={setIsRegistering} />
         )}
       </main>
 

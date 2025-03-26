@@ -65,8 +65,14 @@ const ProductTable = ({ userDetails, data, handleEdit, deleteProduct
 
     // Filter the data based on the filter query
     const filteredItems = data
-    .filter((task) => task.sample_product_name.toLowerCase().includes(debouncedSearch.toLowerCase()))
-    .filter(t => userDetails?.username ? t.userId === userDetails.username : true);
+    .filter((task) => {
+        return (
+            task.sample_product_name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+            task.sample_product_price.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+            task.userId.toString().includes(debouncedSearch)
+        );
+    })
+    .filter(t => userDetails?.username ? t.userId === userDetails.username : true); // if the user exists
 
     const currentItems = filteredItems
     .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
@@ -88,7 +94,7 @@ const ProductTable = ({ userDetails, data, handleEdit, deleteProduct
     // };
 
     return (
-        <div className="list my-5 xl:mt-0">
+        <div className="list mb-10 xl:mt-0">
 
             {/* Filter Input */}
             <div className="md:flex justify-between mb-4">
@@ -118,7 +124,7 @@ const ProductTable = ({ userDetails, data, handleEdit, deleteProduct
                     {currentItems
                     .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
                     .map((task, index) => (
-                        <figure key={task.id || index} className="relative w-[300px] h-[300px] group">
+                        <figure key={task.id || index} className="relative w-[300px] h-[300px] shadow-md rounded-xl group">
                             <img className="object-cover object-center w-full h-full rounded-xl"
                             src={`https://amplify-d2htcnpo66lqyx-ma-amplifyteamdrivebucket28-vu8nmztglqdy.s3.ap-southeast-2.amazonaws.com/photos/${task.product_image}`} 
                             alt={task.product_image}/> 
@@ -170,30 +176,30 @@ const ProductTable = ({ userDetails, data, handleEdit, deleteProduct
                                 </div>
                                 {/* } */}
                             </div>
-                            <figcaption className="absolute bottom-8 left-2/4 flex w-[calc(100%-4rem)] -translate-x-2/4 justify-between rounded-xl border border-white bg-white/75 py-2 px-6 shadow-lg shadow-black/5 saturate-200 backdrop-blur-sm 
+                            <figcaption className="absolute bottom-8 left-2/4 flex w-[calc(100%-4rem)] -translate-x-2/4 justify-between rounded-xl border border-white bg-white/70 py-2 px-6 shadow-lg shadow-black/5 saturate-200 backdrop-blur-sm 
                             transition-all duration-500 delay-300 opacity-100 
                             group-hover:opacity-0 group-hover:pointer-events-none 
                             hover:opacity-100 hover:pointer-events-auto"
                             >
                                 <div>
-                                    <h5 className="text-xl font-medium text-slate-800">
-                                    {task.sample_product_name}
+                                    <h5 className="text-medium font-semibold text-slate-800">
+                                        {task.sample_product_name}
                                     </h5>
                                     <div className="flex justify-between">
                                         <p className="text-slate-600">
                                             ₱{parseFloat(task.sample_product_price).toLocaleString()}
                                         </p>
-                                        {/* <p className="mt-2 text-slate-600">
-                                            ₱{parseFloat(task.sample_product_price).toLocaleString()}
-                                        </p> */}
                                     </div>
                                     <p className="mt-2 text-sm text-slate-600">
                                         added by: {`${task.userId.slice(0, 4)}...`}
                                     </p>
+                                    <p className="text-sm text-slate-600">
+                                        {new Date(task.created_at).toISOString().split("T")[0]}
+                                    </p>
                                 </div>
-                                {/* <h5 className="text-xl font-medium text-slate-800">
-                                    Growth
-                                </h5> */}
+                                {/* <p className="text-[11px] font-medium text-slate-800">
+                                    {new Date(task.created_at).toISOString().split("T")[0]}
+                                </p> */}
                             </figcaption>
                         </figure>
                     ))}

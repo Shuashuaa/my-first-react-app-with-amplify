@@ -47,16 +47,16 @@ const ProductForm = ({
     const handleClick = async (): Promise<boolean> => {
         if (!file || !sampleProductName || !sampleProductPrice) {
             console.error("Missing required fields.");
-            Swal.fire({
-                toast: true,
-                icon: 'error',
-                position: 'top-end',
-                title: `Image is missing`,
-                timerProgressBar: true,
-                timer: 3000,
-                showCancelButton: false,
-                showConfirmButton: false,
-            });
+            // Swal.fire({
+            //     toast: true,
+            //     icon: 'error',
+            //     position: 'top-end',
+            //     title: `Image is missing`,
+            //     timerProgressBar: true,
+            //     timer: 3000,
+            //     showCancelButton: false,
+            //     showConfirmButton: false,
+            // });
             return true;
         }
     
